@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/signupB"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="358dp"
+            android:layout_gravity="center|center_vertical"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Signup"
+                android:textAlignment="center"
+                android:textSize="34sp" />
+
+            <EditText
+                android:id="@+id/signupId"
+                android:layout_width="329dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:inputType="text"
+                android:maxLength="20"
+                android:text="아이디를 입력하세요." />
+
+            <EditText
+                android:id="@+id/signupPassword"
+                android:layout_width="329dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:hint="패스워드를 입력하세요."
+                android:inputType="textPassword"
+                android:maxLength="20" />
+
+            <EditText
+                android:id="@+id/signupPasswordCheck"
+                android:layout_width="329dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:ems="10"
+                android:hint="패스워드 확인을 입력하세요."
+                android:inputType="textPassword"
+                android:maxLength="20" />
+
+            <Button
+                android:id="@+id/signupBtn"
+                android:layout_width="334dp"
+                android:layout_height="wrap_content"
+                android:text="회원가입" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
