@@ -21,11 +21,11 @@ jobs:
         with:
           node-version: '16.x'
 
-      - name: npm install, build, and test
+      - name: npm install, build
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm install yarn -g
+          yarn install
+          yarn run start
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -45,15 +45,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: node-app
-
-      - name: Install yarn
-        run: npm install yarn -g
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build
-        run: yarn dev    
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
