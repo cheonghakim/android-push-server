@@ -46,6 +46,15 @@ jobs:
         with:
           name: node-app
 
+      - name: Install yarn
+        run: npm install yarn -g
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn dev    
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
