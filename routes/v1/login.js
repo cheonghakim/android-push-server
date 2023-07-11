@@ -41,18 +41,18 @@ class LoginRouter {
         }
 
         // 테스트
-        setInterval(async () => {
-          const message = {
-            notification: {
-              title: 'TEST',
-              body: '테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.',
-            },
-            token:
-              'cQ-8_AZ2SSq_cd4sbW7TUq:APA91bEJt7nOSorGSpDMblEvAHb0GF_FStIgFjt2VLdVMMxpsDnZZtc-G3LgeJNHIsSut9jAirxFbNgbnyhnYpc9DFpbzmln87RAW6Yq6lvZRBlIysU6sEwyBoYhfWC2ZSmHE0-I7pR_',
-          }
-          const msg = await Firebase.send(message)
-          console.log('알림 발송 완료: ' + msg)
-        }, 1000 * 10)
+        // setInterval(async () => {
+        //   const message = {
+        //     notification: {
+        //       title: 'TEST',
+        //       body: '테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.',
+        //     },
+        //     token:
+        //       'cQ-8_AZ2SSq_cd4sbW7TUq:APA91bEJt7nOSorGSpDMblEvAHb0GF_FStIgFjt2VLdVMMxpsDnZZtc-G3LgeJNHIsSut9jAirxFbNgbnyhnYpc9DFpbzmln87RAW6Yq6lvZRBlIysU6sEwyBoYhfWC2ZSmHE0-I7pR_',
+        //   }
+        //   const msg = await Firebase.send(message)
+        //   console.log('알림 발송 완료: ' + msg)
+        // }, 1000 * 10)
 
         res.status(200).json({ success: true, message: '인증성공', id })
       } else {
