@@ -1,16 +1,56 @@
 <html>
-<head>
-  <title>Email Template</title>
-</head>
-<body>
-  <h1>Email List</h1>
-  <ul>
-    <% for (let i = 0; i < emailList.length; i++) { %>
-      <li>
-        <h2><%= emailList[i].title %></h2>
-        <p><%= emailList[i].content %></p>
-      </li>
-    <% } %>
-  </ul>
-</body>
+
+  <head>
+    <title>Email Template</title>
+  </head>
+
+  <body>
+    <div style="background-color:#FFFFFF;max-width: 900px;margin: 0 auto;">
+      <div class="block-grid"
+        style="margin: 0 auto; min-width: 320px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;;">
+        <div style="border-collapse: collapse;display: table;background-color:#FFFFFF;">
+          <div class="col num12" style="min-width: 320px; display: table-cell; vertical-align: top;;">
+            <div>
+              <% for (let i=0; i < newsList.length; i++) { %>
+                <div
+                  style="border-top:0px solid transparent;border-left:0px solid transparent;border-bottom:0px solid transparent;border-right:0px solid transparent;padding-top: 0px;padding-bottom:0px;padding-right: 0px;padding-left: 0px;">
+                  <div
+                    style="color:#4998F5;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top: 15px;padding-right:20px;padding-bottom: 5px;padding-left:20px;">
+                    <div
+                      style="font-size: 12px; line-height: 14px; color: #4998F5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                      <p style="font-size: 12px; line-height: 14px; margin: 0;">
+                        <strong>
+                          <a href="<%= newsList[i].link %>" rel="noopener"
+                            style="text-decoration: underline; color: blue;" target="_blank">
+                            <span style="font-size: 14px; line-height: 24px;">
+                              <%= newsList[i].title %>
+                            </span>
+                          </a>
+                        </strong>
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    style="color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:150%;padding-top:0px;padding-right:20px;padding-bottom: 30px;padding-left:20px;">
+                    <div
+                      style="font-size: 12px; line-height: 18px; color: #000000; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                      <p style="font-size: 14px; line-height: 21px; margin: 0;">
+                        <span style="font-size: 14px;">
+                          <%= newsList[i].content %>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+                <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+
 </html>

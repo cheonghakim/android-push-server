@@ -7,6 +7,17 @@ class Firebase {
     })
   }
 
+  async registrationToken({ token, topic }) {
+    try {
+      const response = await this.admin
+        .messaging()
+        .subscribeToTopic(token, topic)
+      return response
+    } catch (error) {
+      await Promise.reject(error)
+    }
+  }
+
   /**
    * 단일 대상, 단일 메세지 발송
    * @typeof {object} message

@@ -20,16 +20,23 @@ package com.example.pushapp;
         import androidx.navigation.ui.NavigationUI;
         import androidx.drawerlayout.widget.DrawerLayout;
         import androidx.appcompat.app.AppCompatActivity;
+        import androidx.recyclerview.widget.LinearLayoutManager;
+        import androidx.recyclerview.widget.RecyclerView;
 
         import com.example.pushapp.databinding.ActivityMainBinding;
         import com.google.common.reflect.TypeToken;
         import com.google.gson.Gson;
+        import com.google.gson.JsonArray;
+        import com.google.gson.JsonObject;
 
         import android.content.Intent;
+        import android.view.View;
         import android.webkit.CookieManager;
 
         import android.util.Log;
         import android.view.MenuItem;
+        import android.widget.EditText;
+        import android.widget.TextView;
         import android.widget.Toast;
 
         import org.json.JSONException;
@@ -66,28 +73,27 @@ public class UserActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
+        // 리스트 가져오기
         getNewsLetters();
-
-        // 우측 하단 메일 버튼
-//        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.newsLettersMenu, R.id.nav_slideshow)
+                R.id.nav_news, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // 유저 아이디 셋팅
+        SharedPreferences preferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
+        String userId = preferences.getString("userId", "");
+        View headerView = navigationView.getHeaderView(0);
+        TextView userNameText = headerView.findViewById(R.id.user_id_section);
+       userNameText.setText(userId);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -112,7 +118,16 @@ public class UserActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem alarmSetting = menu.findItem(R.id.action_settings);
         MenuItem logout = menu.findItem(R.id.action_logout);
+        MenuItem reload = menu.findItem(R.id.action_reload);
 
+        reload.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // 메뉴 아이템 클릭 이벤트 처리
+                recreate();
+                return true;
+            }
+        });
         alarmSetting.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -141,32 +156,18 @@ public class UserActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void setProps() {
-        // 아이디 설정
-        // UserActivity에서 전달된 데이터 받기
-//        Intent intent = getIntent();
-//        String userId = intent.getStringExtra("user_id");
-//
-//        // 받아온 데이터를 사용하여 작업 수행
-//        // 예시: 받아온 userId를 TextView에 설정
-//        TextView textView = findViewById(R.id.user_id_section);
-//
-//        textView.setText( userId );
-
-
-    }
-
     private void getNewsLetters ( ) {
         // 뉴스 레터 API URL
-        String url = "http://10.165.130.84:8090/api/push/v1/news";
+        String apiUrl = BuildConfig.API_URL;
+        String url = apiUrl + "/news";
 
-        // 로그인 요청 생성
+        // 뉴스 레터 요청 생성
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
         OkHttpClient client = new OkHttpClient();
-        // 로그인 요청 보내기
+        // 뉴스 레터 요청 보내기
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -186,7 +187,6 @@ public class UserActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 // 응답 처리
                 String responseData = response.body().string();
-                Log.i(TAG, (responseData));
                 if (response.isSuccessful()) {
 
 
@@ -195,20 +195,32 @@ public class UserActivity extends AppCompatActivity {
                         boolean success = json.getBoolean("success");
 
                         if (success) {
-                            // 로그인 성공
+                            // 뉴스 레터 정보 가져오기 성공
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(UserActivity.this, "데이터를 가져옴", Toast.LENGTH_SHORT).show();
-                                    // 로그인 성공 후 다음 화면으로 이동 등의 로직을 수행합니다.
+                                    // Toast.makeText(UserActivity.this, "데이터를 가져옴", Toast.LENGTH_SHORT).show();
+                                   
+                                    // 데이터 처리
                                     Gson gson = new Gson();
-                                    List<NewsItem> newsList = gson.fromJson(responseData, new TypeToken<List<NewsItem>>(){}.getType());
+                                    JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                                    JsonArray dataArray = jsonObject.getAsJsonArray("data");
+                                    List<NewsItem> newsList = gson.fromJson(dataArray, new TypeToken<List<NewsItem>>(){}.getType());
+                                    // RecyclerView 초기화
+                                    RecyclerView recyclerView = findViewById(R.id.frag_news);
 
-                                    NewsAdapter adapter =  new NewsAdapter(newsList);
+                                    // LayoutManager 설정 (LinearLayoutManager 또는 GridLayoutManager)
+                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(UserActivity.this);
+                                    linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                    recyclerView.setLayoutManager(linearLayoutManager);
+
+                                    // Adapter 설정
+                                    NewsAdapter adapter = new NewsAdapter(newsList);
+                                    recyclerView.setAdapter(adapter);
                                 }
                             });
                         } else {
-                            // 로그인 실패
+                            // 뉴스 레터 가져오기 실패
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -220,13 +232,20 @@ public class UserActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 응답 실패 처리
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(UserActivity.this, "리스트를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+
+                        JSONObject json = new JSONObject(responseData);
+                        String msg = json.getString("message");
+                        // 응답 실패 처리
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(UserActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -234,7 +253,8 @@ public class UserActivity extends AppCompatActivity {
 
     private void userLogout() {
         // 로그아웃 URL
-        String url = "http://10.165.130.84:8090/api/push/v1/login/logout";
+        String apiUrl = BuildConfig.API_URL;
+        String url = apiUrl + "/login/logout";
 
         // 로그아웃 요청 생성
         Request request = new Request.Builder()
@@ -263,7 +283,6 @@ public class UserActivity extends AppCompatActivity {
                 // 응답 처리
                 if (response.isSuccessful()) {
                     String responseData = response.body().string();
-                    Log.i(TAG, (responseData));
                     try {
                         JSONObject json = new JSONObject(responseData);
 
@@ -296,13 +315,20 @@ public class UserActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 응답 실패 처리
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(UserActivity.this, "로그아웃하지 못했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        String responseData = response.body().string();
+                        JSONObject json = new JSONObject(responseData);
+                        String msg = json.getString("message");
+                        // 응답 실패 처리
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(UserActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -318,9 +344,6 @@ public class UserActivity extends AppCompatActivity {
         editor.clear(); // 모든 값을 삭제합니다
         editor.apply();
     }
-
-
-
 
     private void openNotificationSettings() {
         Intent intent = new Intent();

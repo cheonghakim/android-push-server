@@ -14,7 +14,7 @@ router.get('/', requireLogin, async (req, res, next) => {
   try {
     const data = await service.getNotificationList()
     console.log(data)
-    res.send(data).json({ success: true, message: '성공' })
+    res.json({ success: true, message: '성공', data })
   } catch (error) {
     res.status(500).json({ success: false, message: error })
   }
@@ -31,7 +31,7 @@ router.post('/', requireLogin, upload.none(), async (req, res, next) => {
   try {
     if (req?.body.selectAll) {
       const message = {
-        data: {
+        notification: {
           title: req.body.title,
           body: req.body.body,
         },
@@ -40,7 +40,7 @@ router.post('/', requireLogin, upload.none(), async (req, res, next) => {
       const response = await Firebase.sendEach([message])
       if (response) {
         console.log('Successfully sent message:', response)
-        res.send(data).json({ success: true, message: '성공' })
+        res.json({ success: true, message: '성공', data })
       } else {
         res.status(500).json({ success: false, message: '메시지 전송 실패' })
       }
@@ -51,7 +51,7 @@ router.post('/', requireLogin, upload.none(), async (req, res, next) => {
     console.log(data)
     if (data) {
       const message = {
-        data: {
+        notification: {
           title: req.body.title,
           body: req.body.body,
         },
@@ -60,7 +60,7 @@ router.post('/', requireLogin, upload.none(), async (req, res, next) => {
       const response = await Firebase.sendToTargets(message)
       if (response) {
         console.log('Successfully sent message:', response)
-        res.send(data).json({ success: true, message: '성공' })
+        res.json({ success: true, message: '성공', data })
       } else {
         res.status(500).json({ success: false, message: '메시지 전송 실패' })
       }

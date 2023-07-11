@@ -34,6 +34,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText signupPasswordCheck;
     private Button signupBtn;
 
+    private Button goBackBtn;
+
     private static final String TAG = "SignupActivity";
 
 
@@ -45,7 +47,18 @@ public class SignUpActivity extends AppCompatActivity {
         signupPassword = findViewById(R.id.signupPassword);
         signupPasswordCheck  =findViewById(R.id.signupPasswordCheck);
         signupBtn = findViewById(R.id.signupBtn);
+        goBackBtn = findViewById(R.id.goBackBtn);
 
+
+        goBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 이전 액티비티로 돌아가는 코드
+                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish(); // 현재 액티비티 종료
+            }
+        });
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +81,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signup(String userId, String password, String passwordCheck, String token) {
         // 회원가입 API URL
-        String url = "http://10.165.130.84:8090/api/push/v1/signup";
+        String apiUrl = BuildConfig.API_URL;
+        String url = apiUrl + "/signup";
 
         // 요청 바디 생성
         RequestBody requestBody = new FormBody.Builder()

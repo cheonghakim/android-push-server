@@ -2,14 +2,6 @@ const path = require('path')
 const fs = require('fs')
 
 const utils = {
-  // 로그인 체크
-  auth(req, res, next) {
-    if (!req.session.user) {
-      res.status(401).send('로그인 해주세요.')
-    } else {
-      next()
-    }
-  },
   setAutoRouter(app, root) {
     const pathRoutesV1 = path.join(root, 'routes', 'v1')
     const files = fs.readdirSync(pathRoutesV1)

@@ -13,8 +13,7 @@ const upload = multer({ storage })
 router.get('/', requireLogin, async (req, res, next) => {
   try {
     const data = await service.getNewsList()
-    console.log(data)
-    res.send(data).json({ success: true, message: '성공' })
+    res.json({ success: true, message: '성공', data })
   } catch (error) {
     res.status(500).json({ success: false, message: error })
   }
@@ -27,10 +26,10 @@ router.post('/', requireLogin, upload.none(), async (req, res, next) => {
   try {
     const data = await service.getAlarmTargets()
     if (data) {
-      const response = await firebase.messaging().send(message)
+      const response = await Firebase.messaging().send(message)
       if (response) {
         console.log('Successfully sent message:', response)
-        res.send(data).json({ success: true, message: '성공' })
+        res.json({ success: true, message: '성공', data })
       } else {
         res.status(500).json({ success: false, message: '메시지 전송 실패' })
       }

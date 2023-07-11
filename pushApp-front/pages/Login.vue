@@ -6,7 +6,7 @@ import Utils from '@/static/utils'
 
 export default Vue.extend({
   name: 'LoginPage',
-  middleware: ["userAuth"],
+  middleware: ['userAuth'],
   setup() {
     const router = useRouter()
     const userId = ref('')
@@ -22,7 +22,6 @@ export default Vue.extend({
         const { data } = await LoginAPI.v1.login(loginData)
         if (data && data.success) {
           // login(loginData)
-          console.log(router.push)
           router.push('/admin/main')
         } else {
           console.error(data.message)

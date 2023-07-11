@@ -98,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void login(String username, String password, String token) {
         // 로그인 API URL
-        String url = "http://10.165.130.84:8090/api/push/v1/login";
+        String apiUrl = BuildConfig.API_URL;
+        String url = apiUrl + "/login";
 
         // 요청 바디 생성
         RequestBody requestBody = new FormBody.Builder()
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         boolean success = json.getBoolean("success");
+
                         String sessionId = response.header("Set-Cookie");
                         Log.i(TAG, sessionId);
                         if (success) {
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                                     SharedPreferences preferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = preferences.edit();
                                     editor.putString("sessionId", sessionId);
+                                    editor.putString("userId", username);
                                     editor.apply();
 
                                     // 세션 식별자 가져오기 => api 쓸 때 가져오기
@@ -161,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
                                     Intent intent = new Intent(MainActivity.this, UserActivity.class);
 
-                                    // 필요한 경우 데이터 전달
-                                    intent.putExtra("user_id", username);
 
                                     // 액티비티 전환
                                     startActivity(intent);
@@ -184,13 +185,21 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 응답 실패 처리
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        String responseData = response.body().string();
+                        JSONObject json = new JSONObject(responseData);
+                        String msg = json.getString("message");
+                        // 응답 실패 처리
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         });

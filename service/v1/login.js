@@ -17,7 +17,7 @@ module.exports = class LoginService {
       if (queryData) {
         try {
           // 토큰 업데이트
-          if (token) await this.updateToken({ user_id, password, token })
+          if (token) await this.updateToken({ user_id, token })
           return [queryData]
         } catch (error) {
           await Promise.reject(error)
@@ -33,18 +33,17 @@ module.exports = class LoginService {
   /**
    * 토큰 업데이트
    * @param {string} user_id
-   * @param {string} password
    * @param {string} token
    * @returns {Promise<*>}
    */
-  static async updateToken({ user_id, password, token }) {
+  static async updateToken({ user_id, token }) {
     try {
       const query = `
        UPDATE UserTbl 
        SET token = ?, updated_date = ?
-       WHERE user_id = ? AND password = ?;
+       WHERE user_id = ?;
       `
-      await runAsync(query, [token, `${new Date()}`, user_id, password])
+      await runAsync(query, [token, `${new Date()}`, user_id])
     } catch (err) {
       await Promise.reject(err)
     }

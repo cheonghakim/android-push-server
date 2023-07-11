@@ -10,10 +10,15 @@ const upload = multer({ storage })
  */
 router.post('/', upload.none(), async (req, res, next) => {
   try {
-    if (wholeEmailPattern.test(req.body.userId)) {
+    if (!wholeEmailPattern.test(req.body.user_id)) {
       return res
         .status(400)
         .json({ success: false, message: '이메일 형식을 확인해 주세요.' })
+    }
+    if (req.body.password !== req.body.passwordChceck) {
+      return res
+        .status(400)
+        .json({ success: false, message: '비밀번호와 확인 값이 다릅니다.' })
     }
     await service.signup({
       userId: req.body.userId,

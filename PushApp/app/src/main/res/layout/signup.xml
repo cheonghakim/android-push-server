@@ -15,7 +15,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="358dp"
+            android:layout_height="388dp"
             android:layout_gravity="center|center_vertical"
             android:gravity="center"
             android:orientation="vertical">
@@ -64,6 +64,15 @@
                 android:layout_width="334dp"
                 android:layout_height="wrap_content"
                 android:text="회원가입" />
+
+            <Button
+                android:id="@+id/goBackBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:text="취소"
+                android:textColor="@color/material_dynamic_neutral40" />
         </LinearLayout>
 
     </LinearLayout>
