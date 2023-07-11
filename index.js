@@ -65,6 +65,10 @@ class App {
       res.locals.error = req.app.get('env') === 'development' ? err : {}
       res.sendStatus(err.status || 500)
     })
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('Unhandled Promise Rejection:', reason)
+    })
   }
 
   startServer(port) {
@@ -74,7 +78,35 @@ class App {
   }
 
   getNewRss() {
-    schedule.scheduleJob('0 0 2 * * *', async () => {
+    schedule.scheduleJob('0 10 * * * *', async () => {
+      try {
+        const parser = new RssParser()
+        await parser.init()
+        const feeds = await parser.updateRss()
+        const targets = await notifications.getAlarmTargets()
+        for (let i = 0; i < feeds?.length; i++) {
+          this.sendMail({
+            newsList: feeds[i].items,
+            title: feeds[i].title,
+            targets,
+          })
+        }
+
+        const defaultContent =
+          `${feeds[0]?.content}...` || '발송된 메일을 확인하세요.'
+        this.pushAlarm({
+          title: `${feeds.length}건의 피드가 발송 되었습니다.`,
+          content: defaultContent,
+          targets,
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    })
+  }
+
+  async test() {
+    try {
       const parser = new RssParser()
       await parser.init()
       const feeds = await parser.updateRss()
@@ -87,35 +119,15 @@ class App {
         })
       }
 
-      const defaultContent =
-        `${feeds[0]?.content}...` || '발송된 메일을 확인하세요.'
+      const defaultContent = '발송된 메일을 확인하세요.'
       this.pushAlarm({
         title: `${feeds.length}건의 피드가 발송 되었습니다.`,
         content: defaultContent,
         targets,
       })
-    })
-  }
-
-  async test() {
-    const parser = new RssParser()
-    await parser.init()
-    const feeds = await parser.updateRss()
-    const targets = await notifications.getAlarmTargets()
-    for (let i = 0; i < feeds?.length; i++) {
-      this.sendMail({
-        newsList: feeds[i].items,
-        title: feeds[i].title,
-        targets,
-      })
+    } catch (error) {
+      console.error(error)
     }
-
-    const defaultContent = '발송된 메일을 확인하세요.'
-    this.pushAlarm({
-      title: `${feeds.length}건의 피드가 발송 되었습니다.`,
-      content: defaultContent,
-      targets,
-    })
   }
 
   async pushAlarm({ title, content, targets }) {

@@ -32,14 +32,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            buildConfigField("String", "API_URL", "\"http://and-push-app.azurewebsites.net:8090/api/push/v1\"")
+            buildConfigField("String", "API_URL", "\"http://and-push-app.azurewebsites.net:8900/api/push/v1\"")
         }
 
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
-            buildConfigField("String", "API_URL", "\"http://and-push-app.azurewebsites.net:8090/api/push/v1\"")
+            buildConfigField("String", "API_URL", "\"http://and-push-app.azurewebsites.net:8900/api/push/v1\"")
         }
     }
     compileOptions {
