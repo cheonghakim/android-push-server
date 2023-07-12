@@ -78,7 +78,7 @@ class App {
   }
 
   getNewRss() {
-    schedule.scheduleJob('*/10 * * * *', async () => {
+    schedule.scheduleJob('*/3 * * * *', async () => {
       try {
         const parser = new RssParser()
         await parser.init()
