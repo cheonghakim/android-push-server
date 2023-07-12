@@ -12,6 +12,7 @@ const AlarmService = require('./service/v1/notifications')
 const Firebase = require('./plugins/firebase')
 const NewsService = require('./service/v1/news')
 const schedule = require('node-schedule')
+const AlarmModel = require('./model/alarm')
 const SQLiteStore = require('connect-sqlite3')(session)
 
 class App {
@@ -97,6 +98,8 @@ class App {
         await parser.init()
         const feeds = await parser.updateRss()
         const targets = await AlarmService.getAlarmTargets()
+
+        // rss를 순회하면서 메일과 알림 푸쉬
         for (let i = 0; i < feeds?.length; i++) {
           this.sendMail({
             newsList: feeds[i].items,
@@ -105,7 +108,9 @@ class App {
           })
         }
 
-        const defaultContent = '발송된 메일을 확인하세요.'
+        const defaultContent =
+          `${feeds?.items[0]?.content?.slice(0, 30)}...` ||
+          '발송된 메일을 확인하세요.'
         this.pushAlarm({
           title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
           content: defaultContent,
@@ -123,6 +128,8 @@ class App {
       await parser.init()
       const feeds = await parser.updateRss()
       const targets = await AlarmService.getAlarmTargets()
+
+      // rss를 순회하면서 메일과 알림 푸쉬
       for (let i = 0; i < feeds?.length; i++) {
         this.sendMail({
           newsList: feeds[i].items,
@@ -131,9 +138,11 @@ class App {
         })
       }
 
-      const defaultContent = '발송된 메일을 확인하세요.'
+      const defaultContent =
+        `${feeds?.items[0]?.content?.slice(0, 30)}...` ||
+        '발송된 메일을 확인하세요.'
       this.pushAlarm({
-        title: `${feeds.length}건의 피드가 발송 되었습니다.`,
+        title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
         content: defaultContent,
         targets,
       })
@@ -156,6 +165,12 @@ class App {
 
           await Firebase.send(message)
 
+          await AlarmService.saveAlarm(
+            new AlarmModel({
+              title,
+              content,
+            })
+          )
           console.log(`알림 푸쉬 완료: ${targets[i].user_id}`)
         } catch (error) {
           console.error(error)

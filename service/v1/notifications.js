@@ -38,8 +38,9 @@ module.exports = class AlarmService {
    * 알림 저장하기
    * @returns {Promise<*>}
    */
-  static async saveAlarm({ title, content }) {
+  static async saveAlarm(alarmModel) {
     try {
+      const { title, content } = alarmModel
       const getSQL = `
        INSERT INTO AlarmTbl
        (created_date, title, content)
