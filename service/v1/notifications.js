@@ -8,7 +8,7 @@ module.exports = class AlarmService {
   static async getNotificationList() {
     try {
       const getSQL = `
-       SELECT * from AlarmTbl;
+       SELECT * from AlarmTbl ORDER BY created_date DESC;
       `
       const countRows = await getAllAsync(getSQL)
       return countRows
