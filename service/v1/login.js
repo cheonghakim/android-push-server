@@ -52,6 +52,24 @@ module.exports = class LoginService {
   }
 
   /**
+   * 토큰 가져오기
+   * @param {string} userId
+   * @returns {Promise<*>}
+   */
+  static async getToken(userModel) {
+    try {
+      const { userId } = userModel
+      const query = `
+         SELECT token UserTbl 
+         WHERE user_id = ?;
+        `
+      return await getAsync(query, [userId])
+    } catch (err) {
+      await Promise.reject(err)
+    }
+  }
+
+  /**
    * 토큰 삭제
    * @param {string} userId
    * @returns {Promise<*>}

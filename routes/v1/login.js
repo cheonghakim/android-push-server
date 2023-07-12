@@ -45,7 +45,7 @@ class LoginRouter {
       const data = await service.login(userModel)
 
       if (data) {
-        Firebase.registrationToken({
+        await Firebase.registrationToken({
           token: req.body.token,
           topic: 'topic-news',
         })
@@ -78,6 +78,11 @@ class LoginRouter {
     try {
       const userModel = new UserModel({
         userId: req.query.userId,
+      })
+      const token = await service.getToken(userModel)
+      await Firebase.unregistrationToken({
+        token,
+        topic: 'topic-news',
       })
       await service.deleteToken(userModel)
       await req?.session?.destroy()
