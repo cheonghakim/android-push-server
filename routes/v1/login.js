@@ -28,6 +28,12 @@ class LoginRouter {
           .json({ success: false, message: '이메일 형식을 확인해 주세요.' })
       }
 
+      if (isEmpty(req.body.password)) {
+        return res
+          .status(400)
+          .json({ success: false, message: '비밀번호를 입력해 주세요.' })
+      }
+
       // 모델 생성
       const userModel = new UserModel({
         userId: req.body.userId,
