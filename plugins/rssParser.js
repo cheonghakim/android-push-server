@@ -1,7 +1,7 @@
 const Parser = require('rss-parser')
 const RssService = require('../service/v1/rss')
 const NewsService = require('../service/v1/news')
-const FeedService = require('./feed')
+const FeedService = require('../service/v1/feed')
 const iconv = require('iconv-lite')
 const htmlToText = require('html-to-text')
 

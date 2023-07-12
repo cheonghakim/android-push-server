@@ -33,7 +33,7 @@ class NewsModel {
   }
 
   get createdDate() {
-    return _createdDate
+    return this._createdDate
   }
 
   set createdDate(newData) {
@@ -41,7 +41,7 @@ class NewsModel {
   }
 
   get feedId() {
-    return _feedId
+    return this._feedId
   }
 
   set feedId(newData) {
@@ -49,7 +49,7 @@ class NewsModel {
   }
 
   get author() {
-    return _author
+    return this._author
   }
 
   set author(newData) {

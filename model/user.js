@@ -32,7 +32,7 @@ class UserModel {
   }
 
   get token() {
-    return _token
+    return this._token
   }
 
   set token(newData) {
@@ -40,7 +40,7 @@ class UserModel {
   }
 
   get updatedDate() {
-    return _updatedDate
+    return this._updatedDate
   }
 
   set updatedDate(newData) {

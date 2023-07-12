@@ -22,7 +22,7 @@ class FeedModel {
   }
 
   get createdDate() {
-    return _createdDate
+    return this._createdDate
   }
 
   set createdDate(newData) {

@@ -4,7 +4,7 @@ const path = require('path')
 class IndexRouter {
   constructor() {
     this.router = express.Router()
-    this.router.get('/', getIndex)
+    this.router.get('/', this.getIndex)
   }
 
   getRouter() {
