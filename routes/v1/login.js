@@ -29,34 +29,20 @@ class LoginRouter {
       }
 
       // 모델 생성
-      const user = new UserModel({
+      const userModel = new UserModel({
         userId: req.body.userId,
         password: req.body.password,
         token: req.body.token,
       })
 
       // 쿼리 조회
-      const data = await service.login(user)
+      const data = await service.login(userModel)
 
       if (data) {
         Firebase.registrationToken({
           token: req.body.token,
           topic: 'topic-news',
         })
-
-        // 테스트
-        // setInterval(async () => {
-        //   const message = {
-        //     notification: {
-        //       title: 'TEST',
-        //       body: '테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.',
-        //     },
-        //     token:
-        //       'eCxY4-ivQ5i8s6qwX9y8Dl:APA91bGd5yVJQbShur5KwwYoaFE947tmfMYAkGqHqnHoW9AgEIjKQ3NvWNbCarwfCDaNCPoSPTaJpnZ9nwg9oeb9JJk3FWrU1Mj1DwS3Gne3Fuf8bkA617lg4Ixxv0NbFe52g6pfGu4T',
-        //   }
-        //   const msg = await Firebase.send(message)
-        //   console.log('알림 발송 완료: ' + msg)
-        // }, 1000 * 10)
 
         res.status(200).json({ success: true, message: '인증성공' })
       } else {
@@ -70,11 +56,11 @@ class LoginRouter {
 
   async updateToken(req, res, next) {
     try {
-      const user = new UserModel({
+      const userModel = new UserModel({
         userId: req.body.userId,
         token: req.body.token,
       })
-      await service.updateToken(user)
+      await service.updateToken(userModel)
       res.status(200).json({ success: true, message: '업데이트 완료' })
     } catch (error) {
       console.error(error)
@@ -84,10 +70,10 @@ class LoginRouter {
 
   async logout(req, res, next) {
     try {
-      const user = new UserModel({
+      const userModel = new UserModel({
         userId: req.query.userId,
       })
-      const userId = await service.deleteToken(user)
+      await service.deleteToken(userModel)
       await req?.session?.destroy()
       res.status(200).json({ success: true, message: '로그아웃 됨' })
     } catch (error) {
