@@ -60,10 +60,13 @@ module.exports = class LoginService {
     try {
       const { userId } = userModel
       const query = `
-         SELECT token UserTbl 
+         SELECT token 
+         FROM UserTbl 
          WHERE user_id = ?;
         `
-      return await getAsync(query, [userId])
+      const queryData = await getAsync(query, [userId])
+      userModel.token = queryData?.token
+      return userModel
     } catch (err) {
       await Promise.reject(err)
     }
