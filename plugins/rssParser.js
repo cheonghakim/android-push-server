@@ -58,6 +58,7 @@ class RssParser {
             )
           )
 
+          feed.feedId = savedFeed['last_insert_rowid()']
           updatedFeeds.push(feed)
           return updatedFeeds
         } catch (error) {

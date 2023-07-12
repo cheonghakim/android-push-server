@@ -109,8 +109,9 @@ class App {
         }
 
         const defaultContent =
-          `${feeds?.items[0]?.content?.slice(0, 30)}...` ||
-          '발송된 메일을 확인하세요.'
+          feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
+            ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
+            : '발송된 메일을 확인하세요.'
         this.pushAlarm({
           title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
           content: defaultContent,
@@ -139,8 +140,9 @@ class App {
       }
 
       const defaultContent =
-        `${feeds?.items[0]?.content?.slice(0, 30)}...` ||
-        '발송된 메일을 확인하세요.'
+        feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
+          ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
+          : '발송된 메일을 확인하세요.'
       this.pushAlarm({
         title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
         content: defaultContent,
