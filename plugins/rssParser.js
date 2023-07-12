@@ -1,8 +1,9 @@
 const Parser = require('rss-parser')
-const rss = require('../service/v1/rss')
-const news = require('../service/v1/news')
-const feedService = require('../service/v1/feed')
+const RssService = require('../service/v1/rss')
+const NewsService = require('../service/v1/news')
+const FeedService = require('./feed')
 const iconv = require('iconv-lite')
+const htmlToText = require('html-to-text')
 
 class RssParser {
   constructor() {
@@ -20,7 +21,7 @@ class RssParser {
 
   async getRssList() {
     try {
-      const data = await rss.getRssList()
+      const data = await RssService.getRssList()
       if (data) {
         this.rssList = data?.map((item) => item.link) || []
       }
@@ -35,11 +36,10 @@ class RssParser {
         try {
           const updatedFeeds = []
           const feed = await this.parser.parseURL(this.rssList[i])
-
           // Feed 등록
-          const savedFeed = await feedService.saveFeed({
+          const savedFeed = await FeedService.saveFeed({
             link: feed.link,
-            title: feed.title,
+            title: htmlToText.htmlToText(feed.title),
             created_date: `${new Date()}`,
           })
 
@@ -47,9 +47,9 @@ class RssParser {
           await Promise.allSettled(
             feed.items.map(
               async (item) =>
-                await news.saveNews({
-                  title: item.title,
-                  content: item.content,
+                await NewsService.saveNews({
+                  title: htmlToText.htmlToText(item.title),
+                  content: htmlToText.htmlToText(item.content),
                   link: item.link,
                   feedId: savedFeed['last_insert_rowid()'],
                   created_date: `${new Date()}`,

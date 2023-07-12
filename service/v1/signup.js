@@ -8,8 +8,9 @@ const { db, getAsync, runAsync } = require('../../plugins/mysql')
  * @param {string} updatedDate
  * @returns {Promise<*>}
  */
-async function signup({ userId, password, token, updatedDate }) {
+async function signup(userModel) {
   try {
+    const { userId, password, token, updatedDate } = userModel
     const query = `
       INSERT INTO UserTbl (user_id, password, token, updated_date) VALUES (?, ?, ?, ?);
       `

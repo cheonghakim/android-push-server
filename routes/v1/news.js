@@ -1,42 +1,29 @@
 const express = require('express')
-const router = express.Router()
-const service = require('../../service/v1/news')
+const NewsService = require('../../service/v1/news')
 const { requireLogin } = require('../../plugins/checkLogin')
-const Firebase = require('../../plugins/firebase')
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
 
-/**
- * 뉴스 리스트를 반환
- */
-router.get('/', requireLogin, async (req, res, next) => {
-  try {
-    const data = await service.getNewsList()
-    res.json({ success: true, message: '성공', data })
-  } catch (error) {
-    res.status(500).json({ success: false, message: error })
+class NewsRouter {
+  constructor() {
+    this.router = express.Router()
+    this.router.get('/', requireLogin, this.getList)
   }
-})
 
-/**
- * 관리자 페이지에서 뉴스 알림을 발송
- */
-router.post('/', requireLogin, upload.none(), async (req, res, next) => {
-  try {
-    const data = await service.getAlarmTargets()
-    if (data) {
-      const response = await Firebase.messaging().send(message)
-      if (response) {
-        console.log('Successfully sent message:', response)
-        res.json({ success: true, message: '성공', data })
-      } else {
-        res.status(500).json({ success: false, message: '메시지 전송 실패' })
-      }
+  getRouter() {
+    return this.router
+  }
+
+  /**
+   * 뉴스 리스트를 반환
+   */
+  async getList() {
+    try {
+      const data = await NewsService.getNewsList()
+      res.json({ success: true, message: '성공', data })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ success: false, message: error })
     }
-  } catch (error) {
-    res.status(500).json({ success: false, message: error })
   }
-})
+}
 
-module.exports = router
+module.exports = new NewsRouter().getRouter()

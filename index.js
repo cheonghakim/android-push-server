@@ -8,10 +8,11 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const RssParser = require('./plugins/rssParser')
 const Mail = require('./plugins/mail')
-const notifications = require('./service/v1/notifications')
+const AlarmService = require('./service/v1/notifications')
 const Firebase = require('./plugins/firebase')
-const news = require('./service/v1/news')
+const NewsService = require('./service/v1/news')
 const schedule = require('node-schedule')
+const SQLiteStore = require('connect-sqlite3')(session)
 
 class App {
   constructor() {
@@ -26,19 +27,30 @@ class App {
   }
 
   setupMiddlewares() {
-    const SQLiteStore = require('connect-sqlite3')(session)
     this.app.use(express.json())
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(cookieParser())
-    this.app.use(express.static(path.join(__dirname, 'public')))
     this.app.use(
       session({
         store: new SQLiteStore(),
-        secret: 'your secret',
-        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }, // 1 week
+        secret: process.env.SECRET_KEY,
+        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }, // 1 week,
+        resave: false,
+        saveUninitialized: true,
       })
     )
+    this.app.use(express.static(path.join(__dirname, 'public')))
+
+    // ejs test
+    // this.app.set('view engine', 'ejs') // ejs 템플릿 엔진 설정
+    // this.app.set('views', path.join(__dirname, 'views'))
+    // this.app.get('/mail', async (req, res) => {
+    //   const newsList = await NewsService.getNewsList()
+    //   // 데이터를 전달하여 ejs 파일 렌더링
+    //   const data = { newsList }
+    //   res.render('mail', data)
+    // })
   }
 
   setupRoutes() {
@@ -78,12 +90,13 @@ class App {
   }
 
   getNewRss() {
+    // '0 0 2 * * *' => 매일 2시 실행
     schedule.scheduleJob('*/3 * * * *', async () => {
       try {
         const parser = new RssParser()
         await parser.init()
         const feeds = await parser.updateRss()
-        const targets = await notifications.getAlarmTargets()
+        const targets = await AlarmService.getAlarmTargets()
         for (let i = 0; i < feeds?.length; i++) {
           this.sendMail({
             newsList: feeds[i].items,
@@ -92,10 +105,9 @@ class App {
           })
         }
 
-        const defaultContent =
-          `${feeds[0]?.content}...` || '발송된 메일을 확인하세요.'
+        const defaultContent = '발송된 메일을 확인하세요.'
         this.pushAlarm({
-          title: `${feeds.length}건의 피드가 발송 되었습니다.`,
+          title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
           content: defaultContent,
           targets,
         })
@@ -110,7 +122,7 @@ class App {
       const parser = new RssParser()
       await parser.init()
       const feeds = await parser.updateRss()
-      const targets = await notifications.getAlarmTargets()
+      const targets = await AlarmService.getAlarmTargets()
       for (let i = 0; i < feeds?.length; i++) {
         this.sendMail({
           newsList: feeds[i].items,

@@ -8,7 +8,6 @@ class SocketManagement {
     this.clients.push({
       socket: socket,
     })
-    // console.trace(this.clients.length);
   }
 
   // 소켓 제거

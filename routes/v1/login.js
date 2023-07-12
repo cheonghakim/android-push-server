@@ -1,44 +1,48 @@
 const express = require('express')
 const service = require('../../service/v1/login')
-const uuid = require('uuid')
 const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 const Firebase = require('../../plugins/firebase')
 const { wholeEmailPattern } = require('../../static/regex')
 const { requireLogin } = require('../../plugins/checkLogin')
+const UserModel = require('../../model/user')
 
 class LoginRouter {
   constructor() {
     this.router = express.Router()
     this.router.post('/', upload.none(), this.login)
-    this.router.delete('/logout', upload.none(), this.logout)
-    this.router.put('/token', upload.none(), this.updateToken)
+    this.router.delete('/logout', this.logout)
+    this.router.put('/token', upload.none(), requireLogin, this.updateToken)
+  }
+
+  getRouter() {
+    return this.router
   }
 
   async login(req, res, next) {
     try {
-      if (!wholeEmailPattern.test(req.body.user_id)) {
+      if (!wholeEmailPattern.test(req.body.userId)) {
         return res
           .status(400)
           .json({ success: false, message: '이메일 형식을 확인해 주세요.' })
       }
-      const data = await service.login({
-        user_id: req.body.user_id,
+
+      // 모델 생성
+      const user = new UserModel({
+        userId: req.body.userId,
         password: req.body.password,
         token: req.body.token,
       })
+
+      // 쿼리 조회
+      const data = await service.login(user)
 
       if (data) {
         Firebase.registrationToken({
           token: req.body.token,
           topic: 'topic-news',
         })
-        const id = uuid.v4()
-        req.session.user = {
-          user_id: req.body.user_id,
-          id,
-        }
 
         // 테스트
         // setInterval(async () => {
@@ -48,13 +52,13 @@ class LoginRouter {
         //       body: '테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.테스트를 진행합니다.',
         //     },
         //     token:
-        //       'cQ-8_AZ2SSq_cd4sbW7TUq:APA91bEJt7nOSorGSpDMblEvAHb0GF_FStIgFjt2VLdVMMxpsDnZZtc-G3LgeJNHIsSut9jAirxFbNgbnyhnYpc9DFpbzmln87RAW6Yq6lvZRBlIysU6sEwyBoYhfWC2ZSmHE0-I7pR_',
+        //       'eCxY4-ivQ5i8s6qwX9y8Dl:APA91bGd5yVJQbShur5KwwYoaFE947tmfMYAkGqHqnHoW9AgEIjKQ3NvWNbCarwfCDaNCPoSPTaJpnZ9nwg9oeb9JJk3FWrU1Mj1DwS3Gne3Fuf8bkA617lg4Ixxv0NbFe52g6pfGu4T',
         //   }
         //   const msg = await Firebase.send(message)
         //   console.log('알림 발송 완료: ' + msg)
         // }, 1000 * 10)
 
-        res.status(200).json({ success: true, message: '인증성공', id })
+        res.status(200).json({ success: true, message: '인증성공' })
       } else {
         res.status(403).json({ success: false, message: '인증 실패' })
       }
@@ -66,10 +70,11 @@ class LoginRouter {
 
   async updateToken(req, requireLogin, res, next) {
     try {
-      await service.updateToken({
-        user_id: req.body.userId,
+      const user = new UserModel({
+        userId: req.body.userId,
         token: req.body.token,
       })
+      await service.updateToken(user)
       res.status(200).json({ success: true, message: '업데이트 완료' })
     } catch (error) {
       console.error(error)
@@ -79,16 +84,16 @@ class LoginRouter {
 
   async logout(req, res, next) {
     try {
+      const user = new UserModel({
+        userId: req.query.userId,
+      })
+      const userId = await service.deleteToken(user)
       await req?.session?.destroy()
       res.status(200).json({ success: true, message: '로그아웃 됨' })
     } catch (error) {
       console.error(error)
       res.status(500).json({ success: false, message: '서버에러' })
     }
-  }
-
-  getRouter() {
-    return this.router
   }
 }
 
