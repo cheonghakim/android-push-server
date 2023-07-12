@@ -7,6 +7,7 @@ const Firebase = require('../../plugins/firebase')
 const { wholeEmailPattern } = require('../../static/regex')
 const { requireLogin } = require('../../plugins/checkLogin')
 const UserModel = require('../../model/user')
+const { isEmpty } = require('lodash/isEmpty')
 
 class LoginRouter {
   constructor() {

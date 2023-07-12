@@ -5,6 +5,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 const { wholeEmailPattern } = require('../../static/regex')
 const UserModel = require('../../model/user')
+const { isEmpty } = require('lodash/isEmpty')
 
 class SignupRouter {
   constructor() {
