@@ -99,7 +99,7 @@ class App {
         const feeds = await parser.updateRss()
         const targets = await AlarmService.getAlarmTargets()
 
-        // rss를 순회하면서 메일과 알림 푸쉬
+        // rss를 순회하면서 메일 푸쉬
         for (let i = 0; i < feeds?.length; i++) {
           this.sendMail({
             newsList: feeds[i].items,
@@ -108,6 +108,7 @@ class App {
           })
         }
 
+        // 알림은 로그인한 전체를 대상으로 발송
         const defaultContent =
           feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
             ? `${feeds?.items[0]?.title?.slice(0, 30)}...`

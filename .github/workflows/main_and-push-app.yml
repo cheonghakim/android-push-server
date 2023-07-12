@@ -25,7 +25,6 @@ jobs:
         run: |
           npm install yarn -g
           yarn install
-          yarn run start
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -54,3 +53,6 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0AFCBDD1538945DFAFA12AA48959EE71 }}
           package: .
+         
+      - name: start node
+        run: yarn run start
