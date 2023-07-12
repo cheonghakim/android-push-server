@@ -15,7 +15,7 @@ class AlarmRouter {
   /**
    * 알림 리스트를 반환
    */
-  async getList() {
+  async getList(req, res, next) {
     try {
       const data = await AlarmService.getNotificationList()
       res.json({ success: true, message: '성공', data })

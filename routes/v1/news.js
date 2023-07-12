@@ -15,7 +15,7 @@ class NewsRouter {
   /**
    * 뉴스 리스트를 반환
    */
-  async getList() {
+  async getList(req, res, next) {
     try {
       const data = await NewsService.getNewsList()
       res.json({ success: true, message: '성공', data })

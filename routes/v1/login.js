@@ -68,7 +68,7 @@ class LoginRouter {
     }
   }
 
-  async updateToken(req, requireLogin, res, next) {
+  async updateToken(req, res, next) {
     try {
       const user = new UserModel({
         userId: req.body.userId,
