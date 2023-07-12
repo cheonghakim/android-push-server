@@ -78,7 +78,7 @@ class App {
   }
 
   getNewRss() {
-    schedule.scheduleJob('0 10 * * * *', async () => {
+    schedule.scheduleJob('*/10 * * * *', async () => {
       try {
         const parser = new RssParser()
         await parser.init()
@@ -181,6 +181,6 @@ const appInstance = new App()
 appInstance.initialize()
 appInstance.startServer(8900)
 appInstance.getNewRss()
-appInstance.test()
+// appInstance.test()
 
 module.exports = appInstance
