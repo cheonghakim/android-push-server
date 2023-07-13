@@ -14,6 +14,11 @@ class AlarmRouter {
 
   /**
    * 알림 리스트를 반환
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
    */
   async getList(req, res, next) {
     try {

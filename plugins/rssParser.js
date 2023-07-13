@@ -4,6 +4,8 @@ const NewsService = require('../service/v1/news')
 const FeedService = require('../service/v1/feed')
 const iconv = require('iconv-lite')
 const htmlToText = require('html-to-text')
+const FeedModel = require('../model/feed')
+const NewsModel = require('../model/news')
 
 class RssParser {
   constructor() {
@@ -37,25 +39,26 @@ class RssParser {
           const updatedFeeds = []
           const feed = await this.parser.parseURL(this.rssList[i])
           // Feed 등록
-          const savedFeed = await FeedService.saveFeed({
+          const feedModel = new FeedModel({
             link: feed.link,
             title: htmlToText.htmlToText(feed.title),
-            created_date: `${new Date()}`,
+            createdDate: `${new Date()}`,
           })
+          const savedFeed = await FeedService.saveFeed(feedModel)
 
           // Feed 아이템 등록
           await Promise.allSettled(
-            feed.items.map(
-              async (item) =>
-                await NewsService.saveNews({
-                  title: htmlToText.htmlToText(item.title),
-                  content: htmlToText.htmlToText(item.content),
-                  link: item.link,
-                  feedId: savedFeed['last_insert_rowid()'],
-                  created_date: `${new Date()}`,
-                  author: item.author,
-                })
-            )
+            feed.items.map(async (item) => {
+              const newsModel = new NewsModel({
+                title: htmlToText.htmlToText(item.title),
+                content: htmlToText.htmlToText(item.content),
+                link: item.link,
+                feedId: savedFeed['last_insert_rowid()'],
+                createdDate: `${new Date()}`,
+                author: item.author,
+              })
+              return await NewsService.saveNews(newsModel)
+            })
           )
 
           feed.feedId = savedFeed['last_insert_rowid()']
@@ -69,12 +72,6 @@ class RssParser {
     } catch (error) {
       console.error(error)
     }
-  }
-
-  encoding(str) {
-    const buffer = Buffer.from(str, 'utf-8')
-    const decodedString = iconv.decode(buffer, 'utf-8')
-    return decodedString
   }
 }
 

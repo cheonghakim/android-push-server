@@ -11,6 +11,14 @@ class IndexRouter {
     return this.router
   }
 
+  /**
+   * 서버 확인용 index페이지를 반환한다
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
+   */
   getIndex(req, res, next) {
     try {
       res.status(200).sendFile(path.join(__dirname, '../public', 'index.html'))

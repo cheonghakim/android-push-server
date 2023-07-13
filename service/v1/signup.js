@@ -2,11 +2,15 @@ const { db, getAsync, runAsync } = require('../../plugins/mysql')
 
 /**
  * 회원가입
- * @param {string} userId
- * @param {string} password
- * @param {string} token
- * @param {string} updatedDate
+ * @param {UserModel} userModel
  * @returns {Promise<*>}
+ * @throws {Promise<Error>}
+ *
+ * @typedef {Object} UserModel
+ * @property {string} userId
+ * @property {string} password
+ * @property {string} token
+ * @property {string} updatedDate
  */
 async function signup(userModel) {
   try {

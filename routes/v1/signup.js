@@ -17,6 +17,21 @@ class SignupRouter {
     return this.router
   }
 
+  /**
+   * 알림 리스트를 반환
+   * @param {Object} req
+   * @param {RequestBody} req.body
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
+   *
+   * @typedef {Object} RequestBody
+   * @property {string} userId
+   * @property {string} password
+   * @property {string} passwordCheck
+   * @property {string} token
+   */
   async signup(req, res, next) {
     try {
       if (!wholeEmailPattern.test(req.body.userId)) {

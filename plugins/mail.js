@@ -21,10 +21,12 @@ class Mail {
   }
 
   /**
-   *
-   * @param {*} title
-   * @param {*} content
-   * @param {*} receiver
+   * 메일을 발송한다
+   * @param {string} title
+   * @param {string} content
+   * @param {string} receiver
+   * @returns {Promise<*>}
+   * @throws {Promise<Error>}
    */
   async sendMail(title, content, receiver) {
     try {
@@ -37,15 +39,24 @@ class Mail {
         // html: content, // 이메일 본문 (HTML 형식)
       }
       // 이메일 발송
-      await this.transporter.sendMail(mailOptions)
+      return await this.transporter.sendMail(mailOptions)
     } catch (error) {
       await Promise.reject(error)
     }
   }
 
   /**
+   * 타겟 리스트를 받아 순회하면서 메일을 발송합니다.
+   * @param {Array<string>} targetList - 타겟 이메일 주소 리스트
+   * @param {string} title - 메일 제목
+   * @param {Array<News>} newsList - 뉴스 리스트
+   * @returns {void}
+   * @throws {Promise<Error>} - 에러 객체의 프라미스
    *
-   * @param {*} param0
+   * @typedef {Object} News - 뉴스 객체
+   * @property {string} title - 뉴스 제목
+   * @property {string} content - 뉴스 내용
+   * @property {string} link - 뉴스 링크
    */
   async sendWithTargetList({ targetList, title, newsList }) {
     try {
@@ -64,15 +75,19 @@ class Mail {
       }
     } catch (error) {
       await Promise.reject(error)
-
-      res.status(500).send(error)
     }
   }
 
   /**
+   * 템플릿을 생성한다
+   * @param {Array<news>} newsList
+   * @returns {Promise<string>}
+   * @throws {Promise<Error>}
    *
-   * @param {*} newsList
-   * @returns
+   * @typedef {news}
+   * @property {string} title
+   * @property {string} content
+   * @property {string} link
    */
   async getTemplate(newsList) {
     try {

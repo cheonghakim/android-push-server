@@ -1,9 +1,11 @@
+const AlarmModel = require('../../model/alarm')
 const { db, getAsync, runAsync, getAllAsync } = require('../../plugins/mysql')
 
 module.exports = class AlarmService {
   /**
    * 알림 가져오기
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
    */
   static async getNotificationList() {
     try {
@@ -20,6 +22,7 @@ module.exports = class AlarmService {
   /**
    * 알림 대상 가져오기
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
    */
   static async getAlarmTargets() {
     try {
@@ -35,8 +38,14 @@ module.exports = class AlarmService {
   }
 
   /**
-   * 알림 저장하기
-   * @returns {Promise<*>}
+   * 알림을 저장하는 비동기 메서드
+   * @param {AlarmModel} alarmModel - 알림 모델 객체
+   * @returns {Promise<Array>} - 쿼리 결과를 담은 Promise 배열
+   * @throws {Promise<Error>} - 에러 객체
+   *
+   * @typedef {Object} AlarmModel - 알림 모델 객체
+   * @property {string} title - 알림 제목
+   * @property {string} content - 알림 내용
    */
   static async saveAlarm(alarmModel) {
     try {

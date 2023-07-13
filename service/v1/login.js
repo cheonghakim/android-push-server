@@ -1,12 +1,17 @@
+const UserModel = require('../../model/user')
 const { getAsync, runAsync } = require('../../plugins/mysql')
 
 module.exports = class LoginService {
   /**
    * 로그인
-   * @param {string} userId
-   * @param {string} password
-   * @param {string} token
+   * @param {UserModel} userModel
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
+   *
+   * @typedef {Object} UserModel
+   * @property {string} userId
+   * @property {string} password
+   * @property {string} token
    */
   static async login(userModel) {
     try {
@@ -33,9 +38,13 @@ module.exports = class LoginService {
 
   /**
    * 토큰 업데이트
-   * @param {string} userId
-   * @param {string} token
+   * @param {UserModel} userModel
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
+   *
+   * @typedef {Object} UserModel
+   * @property {string} userId
+   * @property {string} token
    */
   static async updateToken(userModel) {
     try {
@@ -53,8 +62,12 @@ module.exports = class LoginService {
 
   /**
    * 토큰 가져오기
-   * @param {string} userId
+   * @param {UserModel} userModel
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
+   *
+   * @typedef {Object} UserModel
+   * @property {string} userId
    */
   static async getToken(userModel) {
     try {
@@ -74,8 +87,12 @@ module.exports = class LoginService {
 
   /**
    * 토큰 삭제
-   * @param {string} userId
+   * @param {UserModel} userModel
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
+   *
+   * @typedef {Object} UserModel
+   * @property {string} userId
    */
   static async deleteToken(userModel) {
     try {

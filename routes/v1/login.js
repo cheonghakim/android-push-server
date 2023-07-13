@@ -21,6 +21,20 @@ class LoginRouter {
     return this.router
   }
 
+  /**
+   * 유저 로그인
+   * @param {Object} req
+   * @param {RequestBody} req.body
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
+   *
+   * @typedef {Object} RequestBody
+   * @property {string} userId - 사용자 아이디
+   * @property {string} password - 비밀번호
+   * @property {string} token - 토큰
+   */
   async login(req, res, next) {
     try {
       if (!wholeEmailPattern.test(req.body.userId)) {
@@ -61,6 +75,19 @@ class LoginRouter {
     }
   }
 
+  /**
+   * 토큰 업데이트
+   * @param {Object} req
+   * @param {RequestBody} req.body
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
+   *
+   * @typedef {Object} RequestBody
+   * @property {string} userId - 사용자 아이디
+   * @property {string} token - 토큰
+   */
   async updateToken(req, res, next) {
     try {
       const userModel = new UserModel({
@@ -75,6 +102,18 @@ class LoginRouter {
     }
   }
 
+  /**
+   * 로그아웃
+   * @param {Object} req
+   * @param {RequestBody} req.body
+   * @param {Object} res
+   * @param {Function} next
+   * @returns {Promise<JSON>}
+   * @throws {Error}
+   *
+   * @typedef {Object} RequestBody
+   * @property {string} userId - 사용자 아이디
+   */
   async logout(req, res, next) {
     try {
       const userModel = new UserModel({

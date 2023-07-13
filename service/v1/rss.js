@@ -4,6 +4,7 @@ module.exports = class RssService {
   /**
    * RSS 링크 가져오기
    * @returns {Promise<*>}
+   * @throws {Promise<Error>}
    */
   static async getRssList() {
     try {
