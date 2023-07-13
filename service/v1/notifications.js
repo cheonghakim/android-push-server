@@ -55,12 +55,7 @@ module.exports = class AlarmService {
        (created_date, title, content)
        VALUES (?, ?, ?); 
       `;
-      const targetRows = await runAsync(getSQL, [
-        `${new Date()}`,
-        title,
-        content,
-      ]);
-      return [targetRows];
+      await runAsync(getSQL, [`${new Date()}`, title, content]);
     } catch (err) {
       await Promise.reject(err);
     }

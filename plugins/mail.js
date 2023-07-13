@@ -80,11 +80,11 @@ class Mail {
 
   /**
    * 템플릿을 생성한다
-   * @param {Array<news>} newsList
+   * @param {Array<News>} newsList
    * @returns {Promise<string>}
    * @throws {Promise<Error>}
    *
-   * @typedef {news}
+   * @typedef {Object} News
    * @property {string} title
    * @property {string} content
    * @property {string} link
