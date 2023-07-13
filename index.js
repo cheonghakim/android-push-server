@@ -109,16 +109,18 @@ class App {
           });
         }
 
-        // 알림은 로그인한 전체를 대상으로 발송
-        const defaultContent =
-          feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
-            ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
-            : "발송된 메일을 확인하세요.";
-        this.pushAlarm({
-          title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
-          content: defaultContent,
-          targets,
-        });
+        if (feeds?.length > 0) {
+          // 알림은 로그인한 전체를 대상으로 발송
+          const defaultContent =
+            feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
+              ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
+              : "발송된 메일을 확인하세요.";
+          this.pushAlarm({
+            title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
+            content: defaultContent,
+            targets,
+          });
+        }
       } catch (error) {
         console.error(error);
       }
@@ -140,16 +142,17 @@ class App {
           targets,
         });
       }
-
-      const defaultContent =
-        feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
-          ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
-          : "발송된 메일을 확인하세요.";
-      this.pushAlarm({
-        title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
-        content: defaultContent,
-        targets,
-      });
+      if (feeds?.length > 0) {
+        const defaultContent =
+          feeds?.items && feeds.items.length > 0 && feeds?.items[0]?.title
+            ? `${feeds?.items[0]?.title?.slice(0, 30)}...`
+            : "발송된 메일을 확인하세요.";
+        this.pushAlarm({
+          title: `${feeds.length || 0} 건의 새로운 피드가 발송 되었습니다.`,
+          content: defaultContent,
+          targets,
+        });
+      }
     } catch (error) {
       console.error(error);
     }
