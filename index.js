@@ -209,7 +209,7 @@ class App {
 
 const appInstance = new App()
 appInstance.initialize()
-appInstance.startServer(8080)
+appInstance.startServer(80)
 appInstance.getNewRss()
 // appInstance.test()
 
