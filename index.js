@@ -1,19 +1,19 @@
 require("./plugins/config");
+const fs = require("fs");
 const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const { auth, setAutoRouter } = require("./plugins/util");
-const SocketManagement = require("./plugins/SocketManagement");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
+
+const path = require("path");
 const bodyParser = require("body-parser");
-const RssParser = require("./plugins/rssParser");
-const Mail = require("./plugins/mail");
-const AlarmService = require("./service/v1/notifications");
-const Firebase = require("./plugins/firebase");
-const NewsService = require("./service/v1/news");
 const schedule = require("node-schedule");
-const AlarmModel = require("./model/alarm");
+const Firebase = require("./plugins/firebase");
 const SQLiteStore = require("connect-sqlite3")(session);
+
+const Mail = require("./plugins/mail");
+const AlarmModel = require("./model/alarm");
+const RssParser = require("./plugins/rssParser");
+const AlarmService = require("./service/v1/notifications");
 
 class App {
   constructor() {
@@ -44,6 +44,7 @@ class App {
     this.app.use(express.static(path.join(__dirname, "public")));
 
     // ejs test
+    // const NewsService = require("./service/v1/news");
     // this.app.set('view engine', 'ejs') // ejs 템플릿 엔진 설정
     // this.app.set('views', path.join(__dirname, 'views'))
     // this.app.get('/mail', async (req, res) => {
@@ -65,7 +66,7 @@ class App {
     this.app.use("/api/push/v1/login", loginRouter);
     this.app.use("/api/push/v1/news", newsRouter);
     this.app.use("/api/push/v1/notifications", notificationsRouter);
-    setAutoRouter(this.app, __dirname);
+    this.setAutoRouter(this.app, __dirname);
   }
 
   setupErrorHandlers() {
@@ -197,6 +198,21 @@ class App {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  /**
+   * 익스프레스 컨트롤러와 디렉토리를 연결한다
+   * @param {Express} app - express
+   * @param {string} root - 루트 디렉토리
+   */
+  setAutoRouter(app, root) {
+    const pathRoutesV1 = path.join(root, "routes", "v1");
+    const files = fs.readdirSync(pathRoutesV1);
+    files.forEach((key) => {
+      if (key.indexOf("login") === -1) {
+        app.use("/api/push/v1", require(path.join(pathRoutesV1, key)));
+      }
+    });
   }
 
   closeServer() {
