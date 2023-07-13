@@ -1,10 +1,10 @@
-const admin = require('firebase-admin')
-const serviceAccount = require('../pushapp-944f8-d3f596451388.json')
+const admin = require("firebase-admin");
+const serviceAccount = require("../pushapp-944f8-d3f596451388.json");
 class Firebase {
   constructor() {
     this.admin = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-    })
+    });
   }
 
   /**
@@ -18,10 +18,10 @@ class Firebase {
     try {
       const response = await this.admin
         .messaging()
-        .subscribeToTopic(token, topic)
-      return response
+        .subscribeToTopic(token, topic);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -36,10 +36,10 @@ class Firebase {
     try {
       const response = await this.admin
         .messaging()
-        .unsubscribeFromTopic(token, topic)
-      return response
+        .unsubscribeFromTopic(token, topic);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -58,10 +58,10 @@ class Firebase {
    */
   async send(message) {
     try {
-      const response = await this.admin.messaging().send(message)
-      return response
+      const response = await this.admin.messaging().send(message);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -80,10 +80,10 @@ class Firebase {
    */
   async sendEach(messages) {
     try {
-      const response = await this.admin.messaging().sendEach(messages)
-      return response
+      const response = await this.admin.messaging().sendEach(messages);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -102,10 +102,10 @@ class Firebase {
    */
   async sendAll(messages) {
     try {
-      const response = await this.admin.messaging().sendAll(messages)
-      return response
+      const response = await this.admin.messaging().sendAll(messages);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -127,12 +127,12 @@ class Firebase {
     try {
       const response = await this.admin
         .messaging()
-        .sendToDevice(tokens, message)
-      return response
+        .sendToDevice(tokens, message);
+      return response;
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 }
 
-module.exports = new Firebase()
+module.exports = new Firebase();

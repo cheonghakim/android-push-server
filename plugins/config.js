@@ -16,7 +16,7 @@ function getValue(name) {
 const value = getValue("dotenv_config_path");
 if (value) {
   require("dotenv").config({
-    path: value
+    path: value,
   });
 } else {
   require("dotenv").config();

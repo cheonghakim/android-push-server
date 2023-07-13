@@ -1,4 +1,4 @@
-const { db, getAsync, runAsync, getAllAsync } = require('../../plugins/mysql')
+const { db, getAsync, runAsync, getAllAsync } = require("../../plugins/mysql");
 
 module.exports = class NewsService {
   /**
@@ -10,11 +10,11 @@ module.exports = class NewsService {
     try {
       const getSQL = `
        SELECT * from NewsTbl ORDER BY created_date DESC;
-      `
-      const countRows = await getAllAsync(getSQL)
-      return countRows
+      `;
+      const countRows = await getAllAsync(getSQL);
+      return countRows;
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
 
@@ -34,16 +34,23 @@ module.exports = class NewsService {
    */
   static async saveNews(newsModel) {
     try {
-      const { createdDate, title, content, link, author, feedId } = newsModel
+      const { createdDate, title, content, link, author, feedId } = newsModel;
 
       const query = `
        INSERT INTO NewsTbl
        (created_date, title, content, link, author, feed_id)
        VALUES (?, ?, ?, ?, ?, ?); 
-      `
-      await runAsync(query, [createdDate, title, content, link, author, feedId])
+      `;
+      await runAsync(query, [
+        createdDate,
+        title,
+        content,
+        link,
+        author,
+        feedId,
+      ]);
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
-}
+};

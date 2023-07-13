@@ -1,24 +1,24 @@
-const express = require('express')
-const service = require('../../service/v1/login')
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
-const Firebase = require('../../plugins/firebase')
-const { wholeEmailPattern } = require('../../static/regex')
-const { requireLogin } = require('../../plugins/checkLogin')
-const UserModel = require('../../model/user')
-const isEmpty = require('lodash/isEmpty')
+const express = require("express");
+const service = require("../../service/v1/login");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const Firebase = require("../../plugins/firebase");
+const { wholeEmailPattern } = require("../../static/regex");
+const { requireLogin } = require("../../plugins/checkLogin");
+const UserModel = require("../../model/user");
+const isEmpty = require("lodash/isEmpty");
 
 class LoginRouter {
   constructor() {
-    this.router = express.Router()
-    this.router.post('/', upload.none(), this.login)
-    this.router.delete('/logout', this.logout)
-    this.router.put('/token', upload.none(), requireLogin, this.updateToken)
+    this.router = express.Router();
+    this.router.post("/", upload.none(), this.login);
+    this.router.delete("/logout", this.logout);
+    this.router.put("/token", upload.none(), requireLogin, this.updateToken);
   }
 
   getRouter() {
-    return this.router
+    return this.router;
   }
 
   /**
@@ -40,13 +40,13 @@ class LoginRouter {
       if (!wholeEmailPattern.test(req.body.userId)) {
         return res
           .status(400)
-          .json({ success: false, message: '이메일 형식을 확인해 주세요.' })
+          .json({ success: false, message: "이메일 형식을 확인해 주세요." });
       }
 
       if (isEmpty(req.body.password)) {
         return res
           .status(400)
-          .json({ success: false, message: '비밀번호를 입력해 주세요.' })
+          .json({ success: false, message: "비밀번호를 입력해 주세요." });
       }
 
       // 모델 생성
@@ -54,24 +54,24 @@ class LoginRouter {
         userId: req.body.userId,
         password: req.body.password,
         token: req.body.token,
-      })
+      });
 
       // 쿼리 조회
-      const data = await service.login(userModel)
+      const data = await service.login(userModel);
 
       if (data) {
         await Firebase.registrationToken({
           token: req.body.token,
-          topic: 'topic-news',
-        })
+          topic: "topic-news",
+        });
 
-        res.status(200).json({ success: true, message: '인증성공' })
+        res.status(200).json({ success: true, message: "인증성공" });
       } else {
-        res.status(403).json({ success: false, message: '인증 실패' })
+        res.status(403).json({ success: false, message: "인증 실패" });
       }
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ success: false, message: '서버에러' })
+      console.error(error);
+      res.status(500).json({ success: false, message: "서버에러" });
     }
   }
 
@@ -93,12 +93,12 @@ class LoginRouter {
       const userModel = new UserModel({
         userId: req.body.userId,
         token: req.body.token,
-      })
-      await service.updateToken(userModel)
-      res.status(200).json({ success: true, message: '업데이트 완료' })
+      });
+      await service.updateToken(userModel);
+      res.status(200).json({ success: true, message: "업데이트 완료" });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ success: false, message: '서버에러' })
+      console.error(error);
+      res.status(500).json({ success: false, message: "서버에러" });
     }
   }
 
@@ -118,20 +118,20 @@ class LoginRouter {
     try {
       const userModel = new UserModel({
         userId: req.query.userId,
-      })
-      const userData = await service.getToken(userModel)
+      });
+      const userData = await service.getToken(userModel);
       await Firebase.unregistrationToken({
         token: userData?.token,
-        topic: 'topic-news',
-      })
-      await service.deleteToken(userModel)
-      await req?.session?.destroy()
-      res.status(200).json({ success: true, message: '로그아웃 됨' })
+        topic: "topic-news",
+      });
+      await service.deleteToken(userModel);
+      await req?.session?.destroy();
+      res.status(200).json({ success: true, message: "로그아웃 됨" });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ success: false, message: '서버에러' })
+      console.error(error);
+      res.status(500).json({ success: false, message: "서버에러" });
     }
   }
 }
 
-module.exports = new LoginRouter().getRouter()
+module.exports = new LoginRouter().getRouter();

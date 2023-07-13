@@ -1,5 +1,5 @@
-const FeedModel = require('../../model/feed')
-const { db, getAsync, runAsync, getAllAsync } = require('../../plugins/mysql')
+const FeedModel = require("../../model/feed");
+const { db, getAsync, runAsync, getAllAsync } = require("../../plugins/mysql");
 
 module.exports = class FeedService {
   /**
@@ -15,18 +15,18 @@ module.exports = class FeedService {
    */
   static async saveFeed(feedModel) {
     try {
-      const { createdDate, title, link } = feedModel
+      const { createdDate, title, link } = feedModel;
       const query = `
        INSERT INTO FeedTbl
        (created_date, title, link)
        VALUES (?, ?, ?); 
-      `
-      const getQuery = `SELECT last_insert_rowid();`
-      await runAsync(query, [createdDate, title, link])
-      const lastItem = await getAsync(getQuery)
-      return lastItem
+      `;
+      const getQuery = `SELECT last_insert_rowid();`;
+      await runAsync(query, [createdDate, title, link]);
+      const lastItem = await getAsync(getQuery);
+      return lastItem;
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
 
@@ -43,18 +43,18 @@ module.exports = class FeedService {
    */
   static async saveFeedHist(feedModel) {
     try {
-      const { createdDate, title, link } = feedModel
+      const { createdDate, title, link } = feedModel;
       const query = `
          INSERT INTO FeedTbl
          (created_date, title, link)
          VALUES (?, ?, ?); 
-        `
-      const getQuery = `SELECT last_insert_rowid();`
-      await runAsync(query, [createdDate, title, link])
-      const lastItem = await getAsync(getQuery)
-      return lastItem
+        `;
+      const getQuery = `SELECT last_insert_rowid();`;
+      await runAsync(query, [createdDate, title, link]);
+      const lastItem = await getAsync(getQuery);
+      return lastItem;
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
-}
+};

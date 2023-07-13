@@ -1,4 +1,4 @@
-const { db, getAsync, runAsync } = require('../../plugins/mysql')
+const { db, getAsync, runAsync } = require("../../plugins/mysql");
 
 /**
  * 회원가입
@@ -14,17 +14,17 @@ const { db, getAsync, runAsync } = require('../../plugins/mysql')
  */
 async function signup(userModel) {
   try {
-    const { userId, password, token, updatedDate } = userModel
+    const { userId, password, token, updatedDate } = userModel;
     const query = `
       INSERT INTO UserTbl (user_id, password, token, updated_date) VALUES (?, ?, ?, ?);
-      `
-    const data = await runAsync(query, [userId, password, token, updatedDate])
-    return data
+      `;
+    const data = await runAsync(query, [userId, password, token, updatedDate]);
+    return data;
   } catch (err) {
-    await Promise.reject(err)
+    await Promise.reject(err);
   }
 }
 
 module.exports = {
   signup,
-}
+};

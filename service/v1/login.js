@@ -1,5 +1,5 @@
-const UserModel = require('../../model/user')
-const { getAsync, runAsync } = require('../../plugins/mysql')
+const UserModel = require("../../model/user");
+const { getAsync, runAsync } = require("../../plugins/mysql");
 
 module.exports = class LoginService {
   /**
@@ -15,24 +15,24 @@ module.exports = class LoginService {
    */
   static async login(userModel) {
     try {
-      const { userId, password, token } = userModel
+      const { userId, password, token } = userModel;
       const query = `
        SELECT * from UserTbl WHERE user_id = ? AND password = ?;
-      `
-      const queryData = await getAsync(query, [userId, password])
+      `;
+      const queryData = await getAsync(query, [userId, password]);
       if (queryData) {
         try {
           // 토큰 업데이트
-          if (token) await this.updateToken(userModel)
-          return [queryData]
+          if (token) await this.updateToken(userModel);
+          return [queryData];
         } catch (error) {
-          await Promise.reject(error)
+          await Promise.reject(error);
         }
       } else {
-        return null
+        return null;
       }
     } catch (error) {
-      await Promise.reject(error)
+      await Promise.reject(error);
     }
   }
 
@@ -48,15 +48,15 @@ module.exports = class LoginService {
    */
   static async updateToken(userModel) {
     try {
-      const { userId, token } = userModel
+      const { userId, token } = userModel;
       const query = `
        UPDATE UserTbl 
        SET token = ?, updated_date = ?
        WHERE user_id = ?;
-      `
-      await runAsync(query, [token, `${new Date()}`, userId])
+      `;
+      await runAsync(query, [token, `${new Date()}`, userId]);
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
 
@@ -71,17 +71,17 @@ module.exports = class LoginService {
    */
   static async getToken(userModel) {
     try {
-      const { userId } = userModel
+      const { userId } = userModel;
       const query = `
          SELECT token 
          FROM UserTbl 
          WHERE user_id = ?;
-        `
-      const queryData = await getAsync(query, [userId])
-      userModel.token = queryData?.token
-      return userModel
+        `;
+      const queryData = await getAsync(query, [userId]);
+      userModel.token = queryData?.token;
+      return userModel;
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
 
@@ -96,15 +96,15 @@ module.exports = class LoginService {
    */
   static async deleteToken(userModel) {
     try {
-      const { userId } = userModel
+      const { userId } = userModel;
       const query = `
          UPDATE UserTbl 
          SET token = NULL, updated_date = ?
          WHERE user_id = ?;
-        `
-      await runAsync(query, [`${new Date()}`, userId])
+        `;
+      await runAsync(query, [`${new Date()}`, userId]);
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
-}
+};

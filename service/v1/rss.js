@@ -1,4 +1,4 @@
-const { db, getAsync, runAsync, getAllAsync } = require('../../plugins/mysql')
+const { db, getAsync, runAsync, getAllAsync } = require("../../plugins/mysql");
 
 module.exports = class RssService {
   /**
@@ -10,11 +10,11 @@ module.exports = class RssService {
     try {
       const getSQL = `
        SELECT * from RssTbl;
-      `
-      const countRows = await getAllAsync(getSQL)
-      return countRows
+      `;
+      const countRows = await getAllAsync(getSQL);
+      return countRows;
     } catch (err) {
-      await Promise.reject(err)
+      await Promise.reject(err);
     }
   }
-}
+};
