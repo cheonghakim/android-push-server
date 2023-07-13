@@ -52,7 +52,8 @@ jobs:
           app-name: 'and-push-app'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0AFCBDD1538945DFAFA12AA48959EE71 }}
+          startUpCommand: 'yarn run start'
           package: .
          
-      - name: start node
-        run: yarn run start
+      # - name: start node
+      #   run: yarn run start
