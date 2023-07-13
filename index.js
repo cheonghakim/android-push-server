@@ -213,8 +213,7 @@ function init() {
   appInstance.startServer(8080);
   appInstance.getNewRss();
   // appInstance.test()
+  return appInstance;
 }
 
-init();
-
-module.exports = appInstance;
+module.exports = init();

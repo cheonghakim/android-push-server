@@ -78,8 +78,8 @@ module.exports = class LoginService {
          WHERE user_id = ?;
         `;
       const queryData = await getAsync(query, [userId]);
-      userModel.token = queryData?.token;
-      return userModel;
+      const tokenUpdate = new UserModel({ token: queryData?.token });
+      return tokenUpdate;
     } catch (err) {
       await Promise.reject(err);
     }

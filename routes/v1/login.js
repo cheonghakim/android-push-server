@@ -120,10 +120,14 @@ class LoginRouter {
         userId: req.query.userId,
       });
       const userData = await service.getToken(userModel);
-      await Firebase.unregistrationToken({
-        token: userData?.token,
-        topic: "topic-news",
-      });
+
+      if (userData.token) {
+        await Firebase.unregistrationToken({
+          token: userData?.token,
+          topic: "topic-news",
+        });
+      }
+
       await service.deleteToken(userModel);
       await req?.session?.destroy();
       res.status(200).json({ success: true, message: "로그아웃 됨" });
