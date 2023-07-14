@@ -1,4 +1,5 @@
 const UserModel = require("../../model/user");
+const Crypto = require("../../plugins/crypto");
 const { getAsync, runAsync } = require("../../plugins/mysql");
 
 module.exports = class LoginService {
@@ -17,11 +18,16 @@ module.exports = class LoginService {
     try {
       const { userId, password, token } = userModel;
       const query = `
-       SELECT * from UserTbl WHERE user_id = ? AND password = ?;
-      `;
-      const queryData = await getAsync(query, [userId, password]);
-      if (queryData) {
+      SELECT password
+      FROM UserTbl 
+      WHERE user_id = ?;
+     `;
+      const queryData = await getAsync(query, [userId]);
+      if (queryData?.password) {
         try {
+          const crypto = new Crypto();
+          const isEqual = await crypto.compare(password, queryData?.password);
+          if (!isEqual) return null;
           // 토큰 업데이트
           if (token) await this.updateToken(userModel);
           return [queryData];

@@ -6,6 +6,7 @@ const upload = multer({ storage });
 const { wholeEmailPattern } = require("../../static/regex");
 const UserModel = require("../../model/user");
 const isEmpty = require("lodash/isEmpty");
+const Crypto = require("../../plugins/crypto");
 
 class SignupRouter {
   constructor() {
@@ -50,9 +51,10 @@ class SignupRouter {
           .json({ success: false, message: "비밀번호와 확인 값이 다릅니다." });
       }
 
+      const hashedPw = await new Crypto().encyptPassword(req.body.password);
       const userModel = new UserModel({
         userId: req.body.userId,
-        password: req.body.password,
+        password: hashedPw,
         token: req.body.token,
         updatedDate: `${new Date()}`,
       });
